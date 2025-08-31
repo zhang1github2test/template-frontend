@@ -46,8 +46,8 @@
     <!-- 数据表格 -->
     <el-card class="table-card">
       <el-table
-          v-loading="loading"
-          :data="tableData"
+          v-loading="userStore.loading"
+          :data="userStore.userList"
           row-key="id"
           height="400"
       >
@@ -72,8 +72,8 @@
 
         <el-table-column label="状态" width="100">
           <template #default="{ row }">
-            <el-tag :type="row.status === 'active' ? 'success' : 'danger'" size="small">
-              {{ row.status === 'active' ? '正常' : '禁用' }}
+            <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">
+              {{ row.status === 1 ? '正常' : '禁用' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -126,11 +126,13 @@
 
 <script setup lang="ts">
 import { usePermissionStore } from '@/stores/permission'
+import { Search as IconEpSearch,Plus as IconEpPlus, Download as IconEpDownload} from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 import dayjs from 'dayjs'
 
 const permissionStore = usePermissionStore()
 const authStore = useAuthStore()
+const userStore = useUserStore()
 const router = useRouter()
 
 // 搜索表单
@@ -145,29 +147,6 @@ const pagination = reactive({
   total: 0
 })
 
-// 表格数据
-const tableData = ref([
-  {
-    id: 1,
-    username: 'admin',
-    nickname: '管理员',
-    email: 'admin@example.com',
-    roles: ['superAdmin'],
-    status: 'active',
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-15T00:00:00Z'
-  },
-  {
-    id: 2,
-    username: 'editor',
-    nickname: '编辑员',
-    email: 'editor@example.com',
-    roles: ['editor'],
-    status: 'active',
-    createdAt: '2024-01-02T00:00:00Z',
-    updatedAt: '2024-01-16T00:00:00Z'
-  }
-])
 
 const loading = ref(false)
 
@@ -187,6 +166,13 @@ const formatDate = (date: string) => {
 // 搜索
 const handleSearch = () => {
   pagination.page = 1
+  userStore.updateQueryParams({
+    page: pagination.page,
+    pageSize: pagination.size,
+    username: searchForm.keyword,
+    nickname: searchForm.keyword,
+    email: searchForm.keyword
+  })
   loadData()
 }
 
@@ -207,6 +193,7 @@ const handleDelete = (row: any) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
+    userStore.deleteUser(row.id)
     // 执行删除操作
     ElMessage.success('删除成功')
     loadData()
@@ -234,24 +221,8 @@ const handleCurrentChange = (val: number) => {
 
 // 加载数据
 const loadData = async () => {
-  loading.value = true
-  try {
-    // 这里调用API加载数据
-    // const response = await userApi.getList({
-    //   page: pagination.page,
-    //   size: pagination.size,
-    //   keyword: searchForm.keyword
-    // })
-    // tableData.value = response.data.list
-    // pagination.total = response.data.total
-
-    // 模拟数据
-    pagination.total = 2
-  } catch (error) {
-    ElMessage.error('加载数据失败')
-  } finally {
-    loading.value = false
-  }
+  await userStore.fetchUsers()
+  pagination.total = userStore.total
 }
 
 // 组件挂载时加载数据

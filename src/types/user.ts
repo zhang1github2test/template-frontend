@@ -6,6 +6,7 @@ export interface User {
     username: string
     nickname: string
     email: string
+    roles: string[]
     phone: string
     gender: string
     status: number
@@ -27,6 +28,7 @@ export interface UserQueryParams {
     pageSize: number
     username?: string
     nickname?: string
+    email?: string
     status?: number
 }
 

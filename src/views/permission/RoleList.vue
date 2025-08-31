@@ -32,15 +32,15 @@
           />
         </el-form-item>
 
-        <el-form-item label="状态">
-          <el-select
-              v-model="searchForm.status"
-              placeholder="请选择状态"
-              clearable
-          >
-            <el-option label="启用" :value="1" />
-            <el-option label="禁用" :value="0" />
-          </el-select>
+        <el-form-item label="状态" style="width: 180px">
+            <el-select
+                v-model="searchForm.status"
+                placeholder="请选择状态"
+                clearable
+            >
+              <el-option label="启用" :value="1" />
+              <el-option label="禁用" :value="0" />
+            </el-select>
         </el-form-item>
 
         <el-form-item>
@@ -338,7 +338,9 @@ const handleReset = () => {
 
 const handleAdd = () => {
   isEdit.value = false
+  currentRoleId.value = null
   Object.assign(roleForm, {
+    id: undefined,
     roleName: '',
     roleCode: '',
     roleDesc: '',
@@ -435,7 +437,6 @@ const handleCurrentChange = (val: number) => {
 
 const handleSubmit = async () => {
   if (!roleFormRef.value) return
-
   await roleFormRef.value.validate(async (valid: boolean) => {
     if (!valid) return
 

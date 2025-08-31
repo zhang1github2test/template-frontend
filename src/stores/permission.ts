@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { match } from "path-to-regexp"
 import { ref } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import { constantRoutes, asyncRoutes } from '@/router/routes'
@@ -51,7 +52,7 @@ export const usePermissionStore = defineStore('permission', () => {
             const hasPermissionAccess = hasPermission(userInfo.permissions, tmp)
             const hasRoleAccess = hasRole(userInfo.roles, tmp)
 
-            if (hasPermissionAccess && hasRoleAccess) {
+            if (hasPermissionAccess || hasRoleAccess) {
                 // 如果有子路由，递归处理
                 if (tmp.children) {
                     tmp.children = filterAsyncRoutes(tmp.children, userInfo)
@@ -111,6 +112,7 @@ export const usePermissionStore = defineStore('permission', () => {
      * 获取用户可访问的菜单
      */
     const getAccessibleMenus = (userInfo: UserInfo): RouteRecordRaw[] => {
+        userInfo.roles
         return routes.value
         // return routes.value
         //     .filter(route => {
@@ -136,9 +138,14 @@ export const usePermissionStore = defineStore('permission', () => {
     const canAccessRoute = (routePath: string, userInfo: UserInfo): boolean => {
         const findRoute = (routes: RouteRecordRaw[], path: string): RouteRecordRaw | null => {
             for (const route of routes) {
-                if (route.path === path) {
-                    return route
+                // 使用 path-to-regexp 来匹配动态路由
+                if (route.path) {
+                    const matcher = match(route.path, { decode: decodeURIComponent })
+                    if (matcher(path)) {
+                        return route
+                    }
                 }
+
                 if (route.children) {
                     const found = findRoute(route.children, path)
                     if (found) return found

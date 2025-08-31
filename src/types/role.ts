@@ -1,6 +1,4 @@
 // src/types/role.ts
-import type { ApiResponse } from './auth'
-
 export interface Role {
     id: number
     roleName: string

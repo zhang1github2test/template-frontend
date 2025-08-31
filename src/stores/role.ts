@@ -47,6 +47,8 @@ export const useRoleStore = defineStore('role', {
         // 创建角色
         async createRole(roleData: Partial<Role>) {
             try {
+                roleData.createTime = undefined
+                roleData.updateTime = undefined
                 const response = await roleApi.createRole(roleData)
                 // 创建成功后刷新列表
                 await this.loadRoles({
