@@ -14,17 +14,17 @@ export const configApi = {
     },
 
     // 新增配置
-    addConfig: (data: Omit<ConfigItem, 'id' | 'createTime'>): Promise<ApiResponse> => {
+    addConfig: (data: Omit<ConfigItem, 'id' | 'createTime'>): Promise<ApiResponse<ConfigItem>> => {
         return request.post('/api/system/config', data)
     },
 
     // 更新配置
-    updateConfig: (data: ConfigItem): Promise<ApiResponse> => {
+    updateConfig: (data: ConfigItem): Promise<ApiResponse<ConfigItem>> => {
         return request.put('/api/system/config', data)
     },
 
     // 删除配置
-    deleteConfig: (id: number): Promise<ApiResponse> => {
+    deleteConfig: (id: number): Promise<ApiResponse<ConfigItem>> => {
         return request.delete(`/api/system/config/${id}`)
     }
 }
