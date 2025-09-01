@@ -1,30 +1,31 @@
 // types/log.ts
 export interface LogItem {
     id: number
-    title: string
-    businessType: string
+    timestamp: string
     method: string
-    requestMethod: string
-    operatorType: string
-    operatorName: string
-    deptName: string
-    operUrl: string
-    operIp: string
-    operLocation: string
-    operParam: string
-    jsonResult: string
-    status: number // 0=正常, 1=异常
-    errorMsg: string
-    operTime: string
-    costTime: number
+    path: string
+    query: string
+    ip: string
+    userAgent: string
+    status: number
+    latency: number
+    handler: string
+    request: any
+    response: any
+    errors: string[]
+    contentLength: number
+    truncated: boolean
+    createdAt: string
+    updatedAt: string
 }
 
 export interface LogQueryParams {
-    title?: string
-    businessType?: string
+    method?: string
+    path?: string
     status?: number
-    operatorName?: string
-    operTime?: [string, string] // 时间范围
+    ip?: string
+    handler?: string
+    timestamp?: [string, string] // 时间范围
     pageNum: number
     pageSize: number
 }

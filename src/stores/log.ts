@@ -22,11 +22,7 @@ export const useLogStore = defineStore('log', () => {
 
     // 搜索条件
     const searchForm = reactive<LogQueryParams>({
-        title: '',
-        businessType: '',
         status: undefined,
-        operatorName: '',
-        operTime: undefined,
         pageNum: 1,
         pageSize: 10
     })
@@ -42,7 +38,7 @@ export const useLogStore = defineStore('log', () => {
                 pageNum: pagination.currentPage,
                 pageSize: pagination.pageSize
             }
-
+            debugger
             const response = await logApi.getLogList(params)
 
             if (response.success) {
@@ -62,17 +58,6 @@ export const useLogStore = defineStore('log', () => {
         }
     }
 
-    /**
-     * 重置搜索条件
-     */
-    const resetSearch = () => {
-        searchForm.title = ''
-        searchForm.businessType = ''
-        searchForm.status = undefined
-        searchForm.operatorName = ''
-        searchForm.operTime = undefined
-        pagination.currentPage = 1
-    }
 
     /**
      * 根据ID获取日志详情
@@ -238,7 +223,6 @@ export const useLogStore = defineStore('log', () => {
 
         // 方法
         fetchLogList,
-        resetSearch,
         getLogById,
         deleteLog,
         deleteLogs,

@@ -35,73 +35,80 @@
       >
         <el-row :gutter="20">
           <el-col :span="6">
-            <el-form-item label="系统模块">
+            <el-form-item label="请求路径">
               <el-input
-                  v-model="logStore.searchForm.title"
-                  placeholder="请输入系统模块"
+                  v-model="logStore.searchForm.path"
+                  placeholder="请输入请求路径"
                   clearable
               />
             </el-form-item>
           </el-col>
-
           <el-col :span="6">
-            <el-form-item label="操作人员">
-              <el-input
-                  v-model="logStore.searchForm.operatorName"
-                  placeholder="请输入操作人员"
-                  clearable
-              />
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="6">
-            <el-form-item label="操作类型">
+            <el-form-item label="请求方法">
               <el-select
-                  v-model="logStore.searchForm.businessType"
-                  placeholder="请选择操作类型"
+                  v-model="logStore.searchForm.method"
+                  placeholder="请选择请求方法"
                   clearable
-                  style="width: 100%"
+                  style="width: 120px"
               >
-                <el-option label="新增" value="ADD" />
-                <el-option label="修改" value="UPDATE" />
-                <el-option label="删除" value="DELETE" />
-                <el-option label="查询" value="SELECT" />
-                <el-option label="其他" value="OTHER" />
+                <el-option label="GET" value="GET" />
+                <el-option label="POST" value="POST" />
+                <el-option label="PUT" value="PUT" />
+                <el-option label="DELETE" value="DELETE" />
+                <el-option label="PATCH" value="PATCH" />
               </el-select>
             </el-form-item>
           </el-col>
 
           <el-col :span="6">
-            <el-form-item label="操作状态">
-              <el-select
+            <el-form-item label="处理函数">
+              <el-input
+                  v-model="logStore.searchForm.handler"
+                  placeholder="请输入处理函数"
+                  clearable
+              />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="6">
+            <el-form-item label="状态码">
+              <el-input
                   v-model="logStore.searchForm.status"
-                  placeholder="请选择操作状态"
+                  placeholder="请输入状态码"
                   clearable
-                  style="width: 100%"
-              >
-                <el-option label="正常" :value="0" />
-                <el-option label="异常" :value="1" />
-              </el-select>
+              />
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="操作时间">
-              <el-date-picker
-                  v-model="logStore.searchForm.operTime"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  value-format="YYYY-MM-DD"
-                  style="width: 100%"
+            <el-form-item label="请求IP">
+              <el-input
+                  v-model="logStore.searchForm.ip"
+                  placeholder="请输入请求IP"
+                  clearable
               />
             </el-form-item>
           </el-col>
 
           <el-col :span="12">
+            <el-form-item label="时间范围">
+              <el-date-picker
+                  v-model="logStore.searchForm.timestamp"
+                  type="datetimerange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="YYYY-MM-DD HH:mm:ss"
+                  style="width: 100%"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="24">
             <el-form-item>
               <el-button type="primary" @click="handleSearch">搜索</el-button>
               <el-button @click="handleResetSearch">重置</el-button>
@@ -132,34 +139,33 @@
           @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="title" label="系统模块" width="120" show-overflow-tooltip />
-        <el-table-column prop="businessType" label="操作类型" width="100">
+        <el-table-column prop="method" label="请求方法" width="100">
           <template #default="{ row }">
-            <el-tag v-if="row.businessType === 'ADD'">新增</el-tag>
-            <el-tag v-else-if="row.businessType === 'UPDATE'" type="warning">修改</el-tag>
-            <el-tag v-else-if="row.businessType === 'DELETE'" type="danger">删除</el-tag>
-            <el-tag v-else-if="row.businessType === 'SELECT'" type="success">查询</el-tag>
-            <el-tag v-else type="info">其他</el-tag>
+            <el-tag
+                :type="getMethodTagType(row.method)"
+            >
+              {{ row.method }}
+            </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="method" label="请求方法" width="200" show-overflow-tooltip />
-        <el-table-column prop="operatorName" label="操作人员" width="100" />
-        <el-table-column prop="deptName" label="部门名称" width="120" show-overflow-tooltip />
-        <el-table-column prop="operIp" label="主机地址" width="130" />
-        <el-table-column prop="status" label="操作状态" width="100">
+        <el-table-column prop="path" label="请求路径" width="200" show-overflow-tooltip />
+        <el-table-column prop="handler" label="处理函数" width="150" show-overflow-tooltip />
+        <el-table-column prop="ip" label="请求IP" width="130" />
+        <el-table-column prop="status" label="状态码" width="100">
           <template #default="{ row }">
-            <el-tag v-if="row.status === 0" type="success">正常</el-tag>
-            <el-tag v-else type="danger">异常</el-tag>
+            <el-tag :type="getStatusTagType(row.status)">
+              {{ row.status }}
+            </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="operTime" label="操作时间" width="180" />
-        <el-table-column prop="costTime" label="消耗时间(ms)" width="120">
+        <el-table-column prop="latency" label="耗时(ms)" width="120">
           <template #default="{ row }">
-            <span :class="{ 'time-warning': row.costTime > 1000 }">
-              {{ row.costTime }}
+            <span :class="{ 'time-warning': row.latency > 1000000000 }">
+              {{ formatLatency(row.latency) }}
             </span>
           </template>
         </el-table-column>
+        <el-table-column prop="timestamp" label="请求时间" width="180" />
         <el-table-column label="操作" width="150" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="handleViewLog(row)">详情</el-button>
@@ -202,98 +208,93 @@
       >
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="系统模块：">
-              <span>{{ detailForm.title }}</span>
+            <el-form-item label="请求方法：">
+              <el-tag :type="getMethodTagType(detailForm.method)">
+                {{ detailForm.method }}
+              </el-tag>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="操作类型：">
-              <el-tag v-if="detailForm.businessType === 'ADD'">新增</el-tag>
-              <el-tag v-else-if="detailForm.businessType === 'UPDATE'" type="warning">修改</el-tag>
-              <el-tag v-else-if="detailForm.businessType === 'DELETE'" type="danger">删除</el-tag>
-              <el-tag v-else-if="detailForm.businessType === 'SELECT'" type="success">查询</el-tag>
-              <el-tag v-else type="info">其他</el-tag>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="操作人员：">
-              <span>{{ detailForm.operatorName }}</span>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="部门名称：">
-              <span>{{ detailForm.deptName || '-' }}</span>
+            <el-form-item label="状态码：">
+              <el-tag :type="getStatusTagType(detailForm.status)">
+                {{ detailForm.status }}
+              </el-tag>
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="主机地址：">
-              <span>{{ detailForm.operIp }}</span>
+            <el-form-item label="请求路径：">
+              <span>{{ detailForm.path }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="操作地点：">
-              <span>{{ detailForm.operLocation || '-' }}</span>
+            <el-form-item label="处理函数：">
+              <span>{{ detailForm.handler || '-' }}</span>
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="操作状态：">
-              <el-tag v-if="detailForm.status === 0" type="success">正常</el-tag>
-              <el-tag v-else type="danger">异常</el-tag>
+            <el-form-item label="请求IP：">
+              <span>{{ detailForm.ip }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="消耗时间：">
-              <span :class="{ 'time-warning': detailForm.costTime > 1000 }">
-                {{ detailForm.costTime }} ms
+            <el-form-item label="用户代理：">
+              <span>{{ detailForm.userAgent || '-' }}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="内容长度：">
+              <span>{{ detailForm.contentLength }} bytes</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="耗时：">
+              <span :class="{ 'time-warning': detailForm.latency > 1000000000 }">
+                {{ formatLatency(detailForm.latency) }}
               </span>
             </el-form-item>
           </el-col>
         </el-row>
 
-        <el-form-item label="请求URL：">
-          <span>{{ detailForm.operUrl }}</span>
+        <el-form-item label="查询参数：">
+          <span>{{ detailForm.query || '-' }}</span>
         </el-form-item>
 
-        <el-form-item label="请求方式：">
-          <el-tag>{{ detailForm.requestMethod }}</el-tag>
+        <el-form-item label="请求时间：">
+          <span>{{ detailForm.timestamp }}</span>
         </el-form-item>
 
-        <el-form-item label="操作时间：">
-          <span>{{ detailForm.operTime }}</span>
-        </el-form-item>
-
-        <el-form-item label="请求参数：">
+        <el-form-item label="请求数据：">
           <el-input
               type="textarea"
               :rows="4"
-              v-model="detailForm.operParam"
+              :value="formatJson(detailForm.request)"
               readonly
           />
         </el-form-item>
 
-        <el-form-item label="返回结果：">
+        <el-form-item label="响应数据：">
           <el-input
               type="textarea"
               :rows="4"
-              v-model="detailForm.jsonResult"
+              :value="formatJson(detailForm.response)"
               readonly
           />
         </el-form-item>
 
-        <el-form-item v-if="detailForm.status === 1" label="异常信息：">
+        <el-form-item v-if="detailForm.errors && detailForm.errors.length > 0" label="错误信息：">
           <el-input
               type="textarea"
               :rows="3"
-              v-model="detailForm.errorMsg"
+              :value="detailForm.errors.join('\n')"
               readonly
           />
         </el-form-item>
@@ -320,22 +321,22 @@ const detailDialogVisible = ref(false)
 // 详情表单
 const detailForm = ref<LogItem>({
   id: 0,
-  title: '',
-  businessType: '',
+  timestamp: '',
   method: '',
-  requestMethod: '',
-  operatorType: '',
-  operatorName: '',
-  deptName: '',
-  operUrl: '',
-  operIp: '',
-  operLocation: '',
-  operParam: '',
-  jsonResult: '',
+  path: '',
+  query: '',
+  ip: '',
+  userAgent: '',
   status: 0,
-  errorMsg: '',
-  operTime: '',
-  costTime: 0
+  latency: 0,
+  handler: '',
+  request: null,
+  response: null,
+  errors: [],
+  contentLength: 0,
+  truncated: false,
+  createdAt: '',
+  updatedAt: ''
 })
 
 // 搜索
@@ -370,7 +371,7 @@ const handleDeleteLog = async (row: LogItem) => {
 
 // 批量删除
 const handleBatchDelete = async () => {
-  await logStore.deleteLogs(logStore.selectedLogIds)
+  await logStore.deleteLogs(logStore.selectedLogIds.value)
 }
 
 // 清空日志
@@ -392,22 +393,22 @@ const handleSelectionChange = (selection: LogItem[]) => {
 const handleDetailDialogClose = () => {
   detailForm.value = {
     id: 0,
-    title: '',
-    businessType: '',
+    timestamp: '',
     method: '',
-    requestMethod: '',
-    operatorType: '',
-    operatorName: '',
-    deptName: '',
-    operUrl: '',
-    operIp: '',
-    operLocation: '',
-    operParam: '',
-    jsonResult: '',
+    path: '',
+    query: '',
+    ip: '',
+    userAgent: '',
     status: 0,
-    errorMsg: '',
-    operTime: '',
-    costTime: 0
+    latency: 0,
+    handler: '',
+    request: null,
+    response: null,
+    errors: [],
+    contentLength: 0,
+    truncated: false,
+    createdAt: '',
+    updatedAt: ''
   }
 }
 
@@ -420,6 +421,58 @@ const handleSizeChange = (val: number) => {
 const handleCurrentChange = (val: number) => {
   logStore.setPagination(val, logStore.pagination.pageSize)
   logStore.fetchLogList()
+}
+
+// 格式化耗时（纳秒转毫秒）
+const formatLatency = (latency: number): string => {
+  return (latency / 1000000).toFixed(2) // 纳秒转毫秒
+}
+
+// 获取方法标签类型
+const getMethodTagType = (method: string): '' | 'success' | 'warning' | 'danger' | 'info' => {
+  switch (method) {
+    case 'GET':
+      return 'success'
+    case 'POST':
+      return 'warning'
+    case 'PUT':
+      return 'warning'
+    case 'DELETE':
+      return 'danger'
+    case 'PATCH':
+      return 'info'
+    default:
+      return ''
+  }
+}
+
+// 获取状态码标签类型
+const getStatusTagType = (status: number): '' | 'success' | 'warning' | 'danger' | 'info' => {
+  if (status >= 200 && status < 300) {
+    return 'success'
+  } else if (status >= 400 && status < 500) {
+    return 'warning'
+  } else if (status >= 500) {
+    return 'danger'
+  } else {
+    return 'info'
+  }
+}
+
+// 格式化JSON数据
+const formatJson = (data: any): string => {
+  if (data === null || data === undefined) {
+    return '-'
+  }
+
+  try {
+    if (typeof data === 'string') {
+      return data
+    }
+    return JSON.stringify(data, null, 2)
+  } catch (e) {
+    return String(data)
+  }
 }
 
 // 组件挂载时获取数据
