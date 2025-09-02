@@ -139,6 +139,16 @@ export const asyncRoutes: RouteRecordRaw[] = [
                     permissions: ['menu:view'],
                     roles: ['superAdmin']
                 }
+            },
+            {
+                path: '/permission/resources',
+                name: 'ResourceManagement',
+                component: () => import('@/views/permission/ResourceManagement.vue'),
+                meta: {
+                    title: '资源管理',
+                    icon: 'Lock',
+                    permissions: ['resource:view']
+                }
             }
         ]
     },
