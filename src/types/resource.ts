@@ -15,6 +15,8 @@ export interface Resource {
     created_at: string
     updated_by?: number
     updated_at: string
+    has_children?: boolean,
+    children?: Resource[]
 }
 
 export interface CreateResourceRequest {

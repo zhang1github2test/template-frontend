@@ -70,13 +70,13 @@ export const asyncRoutes: RouteRecordRaw[] = [
         meta: {
             title: '用户管理',
             icon: 'ep:user',
-            permissions: ['user:view'],
+            permissions: ['user:home'],
             roles: ['admin', 'superAdmin']
         },
         children: [
             {
                 path: '/user/list',
-                name: '用户列表',
+                name: 'userList',
                 component: () => import('@/views/user/UserList.vue'),
                 meta: {
                     title: '用户列表',

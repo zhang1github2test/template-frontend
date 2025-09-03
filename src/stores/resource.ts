@@ -9,7 +9,7 @@ import type {
     UpdateResourceRequest,
     ResourceQueryRequest,
 } from '@/types/resource'
-import {ApiResponse} from "@/types/auth.ts";
+
 
 export const useResourceStore = defineStore('resource', () => {
     // 状态
