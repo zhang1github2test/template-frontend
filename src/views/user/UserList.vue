@@ -60,12 +60,12 @@
           <template #default="{ row }">
             <el-tag
                 v-for="role in row.roles"
-                :key="role"
+                :key="role.id"
                 type="primary"
                 size="small"
                 style="margin-right: 4px;"
             >
-              {{ role }}
+              {{ role.roleName }}
             </el-tag>
           </template>
         </el-table-column>

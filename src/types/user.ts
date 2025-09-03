@@ -1,17 +1,19 @@
 // src/types/user.ts
 
 // 用户基本信息
+import {Role} from "@/types/role.ts";
+
 export interface User {
     id: string
     username: string
     nickname: string
     email: string
-    roles: string[]
     phone: string
     gender: string
     status: number
     createdAt: string
     updatedAt: string
+    roles: Role[]
 }
 
 // 用户列表响应
