@@ -262,6 +262,7 @@ declare global {
   const useRoleStore: typeof import('./stores/role')['useRoleStore']
   const useRoute: typeof import('vue-router')['useRoute']
   const useRouter: typeof import('vue-router')['useRouter']
+  const useSchoolAdmissionStore: typeof import('./stores/schoolAdmission')['useSchoolAdmissionStore']
   const useScreenOrientation: typeof import('@vueuse/core')['useScreenOrientation']
   const useScreenSafeArea: typeof import('@vueuse/core')['useScreenSafeArea']
   const useScriptTag: typeof import('@vueuse/core')['useScriptTag']

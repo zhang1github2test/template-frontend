@@ -187,6 +187,32 @@ export const asyncRoutes: RouteRecordRaw[] = [
         ]
     },
 
+    {
+        path: '/junior',
+        name: 'JuniorExamMgmt',
+        component: () => import('@/layout/index.vue'),
+        redirect: '/junior/schoolAdmission',
+        meta: {
+            title: '中考管理',
+            hidden: false,
+            icon: 'ep:school',
+            permissions: ['schoolAdmission:view'],
+        },
+        children: [
+            {
+                path: '/junior/schoolAdmission',
+                name: 'SchoolAdmission',
+                component: () => import('@/views/edu/SchoolAdmission.vue'),
+                meta: {
+                    title: '中考录取线',
+                    hidden: false,
+                    icon: 'ep:school',
+                    permissions: ['schoolAdmission:view'],
+                }
+            }
+        ]
+    },
+
     // 个人中心（所有登录用户都可访问）
     {
         path: '/profile',

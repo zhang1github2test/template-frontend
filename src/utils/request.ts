@@ -59,7 +59,10 @@ request.interceptors.response.use(
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        authStore.logout()
+                        //authStore.logout()
+                        // 用户取消，也需要清除token
+                        authStore.updateToken('')
+                        router.push('/login')
                     }).catch(() => {
                         // 用户取消，也需要清除token
                         authStore.updateToken('')
