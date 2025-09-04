@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { SchoolAdmission, SchoolAdmissionQuery, PageResult } from '@/api/schoolAdmission'
+import type { SchoolAdmission, ListParams } from '@/types/shcoolAdmission.ts'
 import { schoolAdmissionApi } from '@/api/schoolAdmission'
 
 export const useSchoolAdmissionStore = defineStore('schoolAdmission', () => {
@@ -9,7 +9,7 @@ export const useSchoolAdmissionStore = defineStore('schoolAdmission', () => {
     const loading = ref(false)
 
     // 查询条件
-    const query = ref<SchoolAdmissionQuery>({
+    const query = ref<ListParams>({
         page: 1,
         pageSize: 10,
         schoolName: '',

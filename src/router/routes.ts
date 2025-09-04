@@ -209,6 +209,17 @@ export const asyncRoutes: RouteRecordRaw[] = [
                     icon: 'ep:school',
                     permissions: ['schoolAdmission:view'],
                 }
+            },
+            {
+                path: '/junior/admissionPlan',
+                name: 'AdmissionPlan',
+                component: () => import('@/views/AdmissionPlan/index.vue'),
+                meta: {
+                    title: '中考招生计划',
+                    hidden: false,
+                    icon: 'ep:school',
+                    permissions: ['admissionPlan:view'],
+                }
             }
         ]
     },

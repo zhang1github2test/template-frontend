@@ -16,4 +16,5 @@ export interface ListParams {
     pageSize: number
     schoolName?: string
     year?: number
+    category?: string
 }
