@@ -208,12 +208,13 @@
     >
       <el-tree
           ref="permissionTreeRef"
-          :data="permissionTree"
+          :load="loadNode"
+          lazy
           show-checkbox
           node-key="id"
           :props="{
           children: 'children',
-          label: 'name'
+          label: 'resource_name'
         }"
           :default-checked-keys="defaultCheckedPermissions"
           :default-expanded-keys="defaultExpandedPermissions"
@@ -238,8 +239,9 @@
 import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRoleStore } from '@/stores/role'
-import type { Role, Permission } from '@/types/role'
-
+import type { Role } from '@/types/role'
+import {Resource} from "@/types/resource.ts";
+import type Node from 'element-plus/es/components/tree/src/model/node'
 // 类型定义
 interface SearchForm {
   roleName: string
@@ -310,7 +312,7 @@ const roleRules = {
 }
 
 // 权限相关数据
-const permissionTree = ref<Permission[]>([])
+const permissionTree = ref<Resource[]>([])
 const defaultCheckedPermissions = ref<number[]>([])
 const defaultExpandedPermissions = ref<number[]>([])
 
@@ -407,8 +409,7 @@ const handlePermission = async (row: Role) => {
   permissionLoading.value = true
 
   try {
-    await roleStore.loadPermissionTree()
-    permissionTree.value = roleStore.permissionTree
+   // await roleStore.loadPermissionTree()
     await roleStore.loadRolePermissions(row.id)
     defaultCheckedPermissions.value = roleStore.rolePermissions.map(item => item.id)
     // 展开所有父节点
@@ -418,6 +419,15 @@ const handlePermission = async (row: Role) => {
   } finally {
     permissionLoading.value = false
   }
+}
+
+const loadNode = async (node: Node, resolve: (data: Resource[]) => void) => {
+  let parentId = undefined
+  if (node.level != 0) {
+    parentId = node.data.id
+  }
+  const datas = await roleStore.loadPermissionTree({"parent_id": parentId})
+  resolve(datas)
 }
 
 const handleSelectionChange = (selection: Role[]) => {
@@ -463,8 +473,8 @@ const handleSavePermissions = async () => {
   if (!currentRoleId.value) return
 
   const checkedKeys = permissionTreeRef.value?.getCheckedKeys() || []
-  const halfCheckedKeys = permissionTreeRef.value?.getHalfCheckedKeys() || []
-  const permissionIds = [...checkedKeys, ...halfCheckedKeys]
+ // const halfCheckedKeys = permissionTreeRef.value?.getHalfCheckedKeys() || []
+  const permissionIds = [...checkedKeys]
 
   permissionLoading.value = true
   try {
@@ -479,9 +489,9 @@ const handleSavePermissions = async () => {
 }
 
 // 获取所有父节点ID
-const getAllParentIds = (tree: Permission[], checkedIds: number[]): number[] => {
+const getAllParentIds = (tree: Resource[], checkedIds: number[]): number[] => {
   const parentIds: number[] = []
-  const findParents = (nodes: Permission[]) => {
+  const findParents = (nodes: Resource[]) => {
     nodes.forEach(node => {
       if (node.children && node.children.length > 0) {
         if (node.children.some(child => checkedIds.includes(child.id))) {

@@ -1,15 +1,16 @@
 // src/stores/role.ts
 import { defineStore } from 'pinia'
 import { roleApi } from '@/api/role'
-import { permissionApi } from '@/api/permission'
 import type { Role, RoleQueryParams, Permission } from '@/types/role'
+import {resourceApi} from "@/api/resource.ts";
+import {Resource, ResourceQueryRequest} from "@/types/resource.ts";
 
 interface RoleState {
     roles: Role[]
     total: number
     currentPage: number
     pageSize: number
-    permissionTree: Permission[]
+    permissionTree: Resource[]
     rolePermissions: Permission[]
     loading: boolean
 }
@@ -111,11 +112,11 @@ export const useRoleStore = defineStore('role', {
         },
 
         // 加载权限树
-        async loadPermissionTree() {
+        async loadPermissionTree(resouceQuery?: ResourceQueryRequest) {
             try {
-                const response = await permissionApi.getPermissionTree()
+                const response = await resourceApi.resourceTree(resouceQuery)
                 this.permissionTree = response.data
-                return response
+                return response.data
             } catch (error) {
                 console.error('加载权限树失败:', error)
                 throw error
