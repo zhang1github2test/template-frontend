@@ -38,11 +38,10 @@ export const useLogStore = defineStore('log', () => {
                 pageNum: pagination.currentPage,
                 pageSize: pagination.pageSize
             }
-            debugger
             const response = await logApi.getLogList(params)
 
             if (response.success) {
-                logList.value = response.data.rows
+                logList.value = response.data.list
                 pagination.total = response.data.total
                 return response
             } else {

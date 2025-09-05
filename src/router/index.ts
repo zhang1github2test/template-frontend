@@ -60,7 +60,6 @@ router.beforeEach(async (to, from, next) => {
             } else {
                 // 已生成路由，检查权限
                 if (to.matched.length === 0) {
-                    debugger
                     // 路由不存在，可能是没有权限
                     next('/404')
                 } else if (authStore.userInfo && !permissionStore.canAccessRoute(to.path, authStore.userInfo)) {

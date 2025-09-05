@@ -39,7 +39,7 @@ export const useSystemStore = defineStore('system', () => {
             const response = await configApi.getConfigList(params)
 
             if (response.success) {
-                configList.value = response.data.rows
+                configList.value = response.data.list
                 pagination.total = response.data.total
                 return response
             } else {

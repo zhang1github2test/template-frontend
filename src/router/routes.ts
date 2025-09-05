@@ -30,7 +30,15 @@ export const constantRoutes: RouteRecordRaw[] = [
             title: '登录',
             hidden: true
         }
-    },
+    }
+
+]
+
+/**
+ * 动态路由（需要权限）
+ * 根据用户权限动态加载
+ */
+export const asyncRoutes: RouteRecordRaw[] = [
     {
         path: '/',
         name: 'Layout',
@@ -39,6 +47,7 @@ export const constantRoutes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             title: '首页',
+            permissions: ['Layout:view'],
         },
         children: [
             {
@@ -47,20 +56,14 @@ export const constantRoutes: RouteRecordRaw[] = [
                 component: () => import('@/views/Dashboard.vue'),
                 meta: {
                     requiresAuth: true,
+                    permissions: ['Dashboard:view'],
                     title: '仪表盘',
                     icon: 'ep:data-board',
                     affix: true // 固定在标签页
                 }
             }
         ]
-    }
-]
-
-/**
- * 动态路由（需要权限）
- * 根据用户权限动态加载
- */
-export const asyncRoutes: RouteRecordRaw[] = [
+    },
     // 用户管理模块
     {
         path: '/user',
@@ -71,7 +74,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
             title: '用户管理',
             icon: 'ep:user',
             permissions: ['user:home'],
-            roles: ['admin', 'superAdmin']
+            roles: ['admin', 'superAdmin'],
+            requiresAuth: true,
         },
         children: [
             {
@@ -81,7 +85,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
                 meta: {
                     title: '用户列表',
                     permissions: ['user:view'],
-                    keepAlive: true
+                    keepAlive: true,
+                    requiresAuth: true,
                 }
             },
             {
@@ -92,7 +97,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
                     title: '新增用户',
                     permissions: ['user:create'],
                     hidden: true,
-                    activeMenu: '/user/list'
+                    activeMenu: '/user/list',
+                    requiresAuth: true,
                 }
             },
             {
@@ -103,7 +109,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
                     title: '编辑用户',
                     permissions: ['user:edit'],
                     hidden: true,
-                    activeMenu: '/user/list'
+                    activeMenu: '/user/list',
+                    requiresAuth: true,
                 }
             }
         ]
@@ -118,7 +125,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
         meta: {
             title: '权限管理',
             icon: 'ep:lock',
-            roles: ['admin', 'superAdmin']
+            roles: ['admin', 'superAdmin'],
+            requiresAuth: true,
         },
         children: [
             {
@@ -127,7 +135,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
                 component: () => import('@/views/permission/RoleList.vue'),
                 meta: {
                     title: '角色管理',
-                    permissions: ['role:view']
+                    permissions: ['role:view'],
+                    requiresAuth: true,
                 }
             },
             {
@@ -137,7 +146,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
                 meta: {
                     title: '菜单管理',
                     permissions: ['menu:view'],
-                    roles: ['superAdmin']
+                    roles: ['superAdmin'],
+                    requiresAuth: true,
                 }
             },
             {
@@ -147,7 +157,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
                 meta: {
                     title: '资源管理',
                     icon: 'Lock',
-                    permissions: ['resource:view']
+                    permissions: ['resource:view'],
+                    requiresAuth: true,
                 }
             }
         ]
@@ -162,7 +173,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
         meta: {
             title: '系统管理',
             icon: 'ep:setting',
-            roles: ['admin', 'superAdmin']
+            roles: ['admin', 'superAdmin'],
+            requiresAuth: true,
         },
         children: [
             {
@@ -171,7 +183,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
                 component: () => import('@/views/system/SystemConfig.vue'),
                 meta: {
                     title: '系统配置',
-                    permissions: ['system:config']
+                    permissions: ['system:config'],
+                    requiresAuth: true,
                 }
             },
             {
@@ -181,7 +194,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
                 meta: {
                     title: '系统日志',
                     permissions: ['system:log'],
-                    roles: ['superAdmin']
+                    roles: ['superAdmin'],
+                    requiresAuth: true,
                 }
             }
         ]
@@ -197,6 +211,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
             hidden: false,
             icon: 'ep:school',
             permissions: ['schoolAdmission:view'],
+            requiresAuth: true,
         },
         children: [
             {
@@ -208,6 +223,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
                     hidden: false,
                     icon: 'ep:school',
                     permissions: ['schoolAdmission:view'],
+                    requiresAuth: true,
                 }
             },
             {
@@ -219,6 +235,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
                     hidden: false,
                     icon: 'ep:school',
                     permissions: ['admissionPlan:view'],
+                    requiresAuth: true,
                 }
             }
         ]
@@ -233,7 +250,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
         meta: {
             title: '个人中心',
             icon: 'ep:user',
-            hidden: true // 在侧边栏隐藏，通过头部用户菜单访问
+            hidden: true, // 在侧边栏隐藏，通过头部用户菜单访问
+            requiresAuth: true,
         },
         children: [
             {
@@ -242,7 +260,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
                 component: () => import('@/views/Profile.vue'),
                 meta: {
                     title: '个人信息',
-                    breadcrumb: false
+                    breadcrumb: false,
+                    requiresAuth: true,
                 }
             }
         ]

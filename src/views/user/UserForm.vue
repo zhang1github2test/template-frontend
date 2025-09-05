@@ -21,6 +21,13 @@
               :disabled="isEditMode"
           />
         </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input
+              v-model="formModel.password"
+              placeholder="请输入密码"
+              :disabled="isEditMode"
+          />
+        </el-form-item>
 
         <el-form-item label="昵称" prop="nickname">
           <el-input
@@ -48,6 +55,20 @@
             <el-radio label="male">男</el-radio>
             <el-radio label="female">女</el-radio>
           </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="角色" prop="roleIds">
+          <el-select
+              v-model="formModel.roleIds"
+              multiple
+              placeholder="请选择角色"  style="width: 100%">
+            <el-option
+                v-for="role in roleOptions"
+                :key="role.id"
+                :label="role.roleName"
+                :value="role.id">
+            </el-option>
+          </el-select>
         </el-form-item>
 
         <el-form-item label="状态" prop="status">
@@ -80,6 +101,8 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus'
 import { useUserStore } from '@/stores/user'
+import {useRoleStore} from "@/stores/role.ts";
+import {Role} from "@/types/role.ts";
 
 // 类型定义
 interface UserForm {
@@ -89,12 +112,15 @@ interface UserForm {
   phone: string
   gender: string
   status: number
+  roleIds:number[]
+  password: string
 }
 
 // 响应式数据
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const roleStore = useRoleStore()
 const formRef = ref<FormInstance>()
 const loading = ref(false)
 
@@ -108,7 +134,9 @@ const formModel = reactive<UserForm>({
   email: '',
   phone: '',
   gender: 'male',
-  status: 1
+  password: '',
+  status: 1,
+  roleIds:[],
 })
 
 // 表单验证规则
@@ -131,14 +159,31 @@ const formRules = reactive<FormRules>({
   ],
   gender: [
     { required: true, message: '请选择性别', trigger: 'change' }
-  ]
+  ],
+    roles: [
+  { required: true, message: '请选择角色', trigger: 'change' }
+]
 })
+
+// 角色选项数据
+const roleOptions = ref<Role[]>([])
+// 加载角色数据
+const loadRoleData = async () => {
+  try {
+    // 获取所有角色数据
+    roleOptions.value =   await roleStore.loadAllRoles()
+  } catch (error) {
+    ElMessage.error('加载角色数据失败')
+  }
+}
 
 // 加载用户数据（编辑模式）
 const loadUserData = async (id: string) => {
   try {
     loading.value = true
     const userData = await userStore.getUserById(id)
+    userData.roleIds = userData.roles.map(role => role.id)
+    delete userData.roles
     if (userData) {
       Object.assign(formModel, userData)
     }
@@ -190,6 +235,8 @@ const handleCancel = () => {
 
 // 组件挂载时的处理
 onMounted(() => {
+  // 加载角色数据
+  loadRoleData()
   if (isEditMode.value) {
     const userId = route.params.id as string
     if (userId) {

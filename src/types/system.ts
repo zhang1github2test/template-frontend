@@ -11,6 +11,6 @@ export interface ConfigItem {
 
 // 定义分页响应数据接口
 export interface ConfigPageData {
-    rows: ConfigItem[]
+    list: ConfigItem[]
     total: number
 }

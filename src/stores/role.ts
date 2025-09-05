@@ -27,6 +27,19 @@ export const useRoleStore = defineStore('role', {
     }),
 
     actions: {
+        // 查询所有角色
+        async loadAllRoles() {
+            try {
+                const response = await roleApi.getRoleList({
+                    page: 1,
+                    size: 1000
+                })
+                return response.data.list
+            } catch (error) {
+                console.error('查询所有角色失败:', error)
+                throw error
+            }
+        },
         // 加载角色列表
         async loadRoles(params: RoleQueryParams) {
             this.loading = true
@@ -116,7 +129,7 @@ export const useRoleStore = defineStore('role', {
             try {
                 const response = await resourceApi.resourceTree(resouceQuery)
                 this.permissionTree = response.data
-                return response.data
+                return response.data || []
             } catch (error) {
                 console.error('加载权限树失败:', error)
                 throw error

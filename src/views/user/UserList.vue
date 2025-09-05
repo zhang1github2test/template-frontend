@@ -154,6 +154,7 @@ const loading = ref(false)
 const hasPermission = (permissions: string[]) => {
   if (authStore.userInfo) {
     return permissionStore.hasPermission(authStore.userInfo.permissions, { meta: { permissions } } as any)
+        || permissionStore.hasRole(authStore.userInfo.roles, { meta: { permissions }  } as any)
   }
   return false
 }

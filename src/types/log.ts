@@ -31,6 +31,6 @@ export interface LogQueryParams {
 }
 
 export interface LogPageData {
-    rows: LogItem[]
+    list: LogItem[]
     total: number
 }

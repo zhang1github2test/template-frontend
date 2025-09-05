@@ -99,7 +99,6 @@ export const useMenuStore = defineStore('menu', () => {
         try {
             loading.value = true
             error.value = null
-            debugger
             // 清理不需要的字段
             const cleanData = cleanMenuData(menuData)
 
@@ -131,7 +130,6 @@ export const useMenuStore = defineStore('menu', () => {
 
             // 清理不需要的字段
             const cleanData = cleanMenuData(menuData)
-            debugger
             const response = await menuApi.updateMenu(id, cleanData)
 
             // 重新获取菜单树以更新状态

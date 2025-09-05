@@ -30,6 +30,8 @@ function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
     const permissions = Array.isArray(value) ? value : [value]
     const hasPermission = permissionStore.hasPermission(authStore.userInfo.permissions, {
         meta: { permissions }
+    } as any) || permissionStore.hasRole(authStore.userInfo.roles, {
+        meta: { permissions }
     } as any)
 
     if (!hasPermission) {

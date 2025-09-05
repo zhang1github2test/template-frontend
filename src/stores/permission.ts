@@ -16,6 +16,9 @@ export const usePermissionStore = defineStore('permission', () => {
      * 判断是否有权限访问路由
      */
     const hasPermission = (permissions: string[], route: RouteRecordRaw): boolean => {
+        if(route.meta && route.meta.requiresAuth === false ) {
+            return true
+        }
         if (route.meta && route.meta.permissions) {
             // 需要检查权限
             const routePermissions = route.meta.permissions as string[]
@@ -23,7 +26,7 @@ export const usePermissionStore = defineStore('permission', () => {
             return hasAnyPermission(permissions, routePermissions)
         } else {
             // 没有权限要求的路由，默认可以访问
-            return true
+            return false
         }
     }
 
@@ -31,11 +34,17 @@ export const usePermissionStore = defineStore('permission', () => {
      * 根据角色判断是否有权限
      */
     const hasRole = (roles: string[], route: RouteRecordRaw): boolean => {
+        if(route.meta && !route.meta.requiresAuth) {
+            return true
+        }
+        if (roles.includes('superAdmin')) {
+            return true
+        }
         if (route.meta && route.meta.roles) {
             const routeRoles = route.meta.roles as string[]
             return roles.some(role => routeRoles.includes(role))
         } else {
-            return true
+            return false
         }
     }
 
@@ -47,7 +56,6 @@ export const usePermissionStore = defineStore('permission', () => {
 
         routes.forEach(route => {
             const tmp = { ...route }
-
             // 检查权限
             const hasPermissionAccess = hasPermission(userInfo.permissions, tmp)
             const hasRoleAccess = hasRole(userInfo.roles, tmp)
@@ -74,7 +82,7 @@ export const usePermissionStore = defineStore('permission', () => {
     const generateRoutes = (userInfo: UserInfo): Promise<RouteRecordRaw[]> => {
         return new Promise(resolve => {
             let accessedRoutes: RouteRecordRaw[]
-
+            debugger
             // 超级管理员拥有所有权限
             if (userInfo.roles.includes('superAdmin') || userInfo.permissions.includes('*:*')) {
                 accessedRoutes = asyncRoutes || []

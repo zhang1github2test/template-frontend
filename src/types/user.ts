@@ -13,7 +13,8 @@ export interface User {
     status: number
     createdAt: string
     updatedAt: string
-    roles: Role[]
+    roles?: Role[]
+    roleIds: number[]
 }
 
 // 用户列表响应
@@ -43,6 +44,7 @@ export interface UserCreateForm {
     gender: string
     status: number
     password: string
+    roleIds: number[]
 }
 
 // 更新用户表单
@@ -52,4 +54,5 @@ export interface UserUpdateForm {
     phone?: string
     gender?: string
     status?: number
+    roleIds: number[]
 }
